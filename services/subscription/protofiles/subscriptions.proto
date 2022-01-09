@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+service Subscriptions {
+  rpc findAll (SubscriptionFilters) returns (SubscriptionResponse) {}
+  rpc findOne (SubscriptionId) returns (SubscriptionResponse) {}
+  rpc create (Subscription) returns (SubscriptionId) {}
+  rpc cancel (SubscriptionId) returns (SubscriptionId) {}
+}
+
+message Empty {}
+
+message SubscriptionResponse {
+  repeated Subscription rows = 1;
+}
+
+message SubscriptionFilters {
+  oneof optional_gender {
+    string gender = 1;
+  }
+  oneof optional_consent_flag {
+    bool consent_flag = 2;
+  }
+  oneof optional_date_of_birth {
+    string date_of_birth = 3;
+  }
+  oneof optional_nid {
+    int32 nid = 4;
+  }
+}
+
+message SubscriptionId {
+  string sid = 1;
+}
+
+message Subscription {
+  string sid = 1;
+  string email = 2;
+  oneof optional_first_name {
+    string first_name = 3;
+  }
+  oneof optional_gender {
+    string gender = 4;
+  }
+  string date_of_birth = 5;
+  bool consent_flag = 6;
+  int32 nid = 7;
+}
