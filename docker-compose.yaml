@@ -1,0 +1,70 @@
+version: '3.9'
+
+services:
+#  docs:
+#    volumes:
+#      - ./pakages/docs:/usr/src/app
+
+#  public:
+#    restart: always
+#    volumes:
+#      - ./pakages/public:/usr/src/app
+
+#  subscription:
+#    restart: always
+#    volumes:
+#      - ./pakages/subscription:/usr/src/app
+
+#  email:
+#    restart: always
+#    volumes:
+#      - ./pakages/subscription:/usr/src/app
+
+  zookeeper:
+    image: bitnami/zookeeper:3.7
+    ports:
+      - '2181:2181'
+    volumes:
+      - ./volumes/zookeeper_data:/bitnami
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+    networks:
+      - app-network
+
+  kafka:
+    image: bitnami/kafka:3
+    ports:
+      - '9093:9093'
+    volumes:
+      - ./volumes/kafka_data:/bitnami
+    hostname: 'localhost'
+    environment:
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: 'CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      KAFKA_CFG_LISTENERS: 'CLIENT://9092,EXTERNAL://9093'
+      KAFKA_CFG_ADVERTISED_LISTENERS: 'CLIENT://kafka:9092,EXTERNAL://kafka:9093'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'CLIENT'
+      KAFKA_OFFSET_TOPIC_REPLICATION_FACTOR: '1'
+      KAFKA_CFG_AUTO_CREATE_TOPIS_ENABLE: 'true'
+    networks:
+      - app-network
+    depends_on:
+      - zookeeper
+
+  postgresql:
+    restart: always
+    image: postgres:13.4
+    ports:
+      - '30040:5432'
+    environment:
+      POSTGRES_USER: duarbdhks
+      POSTGRES_PASSWORD: test123
+    volumes:
+      - ./volumes/postgresql_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

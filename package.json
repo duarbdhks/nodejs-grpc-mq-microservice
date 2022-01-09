@@ -1,0 +1,13 @@
+{
+  "name": "nodejs-grpc-microservice",
+  "version": "1.0.0",
+  "description": "node&grpc&kafka Microservice",
+  "main": "index.js",
+  "scripts": {
+    "up": "docker-compose -p grpc-microservice up -d",
+    "down": "docker-compose -p grpc-microservice down",
+    "prebuild": "node ./prebuild.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
