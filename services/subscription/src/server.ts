@@ -11,12 +11,12 @@ const options = {
   defaults: true,
   oneofs: true,
 }
-const subscriptions = path.join(path.resolve('.'), './protofiles/subscriptions.proto')
+const subscriptionService = path.join(path.resolve('.'), './protofiles/subscriptions.proto')
 const health = path.join(path.resolve('.'), './protofiles/health.proto')
 
 const app = new Mali()
 
-app.addService(subscriptions, 'Subscriptions', options)
+app.addService(subscriptionService, 'Subscriptions', options)
 app.addService(health, 'Health', options)
 
 app.use(async (ctx: any, next: any) => {

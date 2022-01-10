@@ -51,7 +51,10 @@ export async function findOne(options: ISubscriptionId): Promise<QueryBuilder> {
     .where({ sid })
     .first()
 
-  if (!subscription) throw new Error('Subscription not found')
+  if (!subscription) {
+    const error = new Error('Subscription not found')
+    throw { ...error, code: grpc.status.NOT_FOUND }
+  }
   return subscription
 }
 
@@ -80,6 +83,11 @@ export async function cancel(options: ISubscriptionId): Promise<QueryBuilder> {
       .transacting(trx)
       .forUpdate()
       .first()
+
+    if (!subscription) {
+      const error = new Error('Subscription not found')
+      throw { ...error, code: grpc.status.NOT_FOUND }
+    }
 
     await pg.queryBuilder()
       .delete()
